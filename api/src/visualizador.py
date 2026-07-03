@@ -1,4 +1,7 @@
 import pandas as pd
+import numpy as np
+from sklearn.decomposition import PCA
+from tfidf import TfIdf
 
 class Visualizador:
     def __init__(self, biblia):
@@ -54,3 +57,41 @@ class Visualizador:
             promedios[nombre] = cantidades.get("palabras")/cantidades.get("versiculos")
 
         return promedios
+    
+    def obtener_pca_versiculos(self):
+        textos_versiculos = []
+        etiquetas_testamento = []
+
+        for nombre_testamento, testamento in self.biblia.testamentos.items():
+            for libro in testamento.libros.values():
+                for capitulo in libro.capitulos.values():
+                    for versiculo in capitulo.versiculos:
+                        if len(versiculo.tokens) > 0:
+                            palabras = versiculo.tokens
+                        else:
+                            texto_limpio = versiculo.texto_original.lower().replace(".", "").replace(",", "").replace('"', "")
+                            palabras = texto_limpio.split()
+                        if len(palabras) > 0: 
+                            textos_versiculos.append(palabras)
+                            etiquetas_testamento.append(nombre_testamento)
+
+        vectores_tfidf = self.tfidf.calcular_tfidf(textos_versiculos)
+
+        pca = PCA(n_components=2)
+        matriz_tfidf = np.array(vectores_tfidf)
+        coordenadas_2d = pca.fit_transform(matriz_tfidf)
+
+        x_ot = []
+        y_ot = []
+        x_nt = []
+        y_nt = []
+
+        for i in range(len(etiquetas_testamento)):
+            etiqueta = etiquetas_testamento[i]
+    
+            if etiqueta == "OT":
+                x_ot.append(coordenadas_2d[i, 0])
+                y_ot.append(coordenadas_2d[i, 1])
+            else:
+                x_nt.append(coordenadas_2d[i, 0])
+                y_nt.append(coordenadas_2d[i, 1])
