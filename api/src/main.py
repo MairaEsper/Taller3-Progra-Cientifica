@@ -1,5 +1,6 @@
 from estructura.biblia import Biblia
 from visualizador import Visualizador
+from buscador import Buscador
 
 def main():    
     biblia = Biblia()
@@ -23,6 +24,10 @@ def main():
     for palabra, frec in top:
         print(f" - {palabra}: {frec}")
     
+    buscador = Buscador(biblia)
+    frase_buscar = input("Ingrese la frase que desea buscar: ")
+    buscador.procesar_biblia()
+    buscador.buscar_frase(frase_buscar, 5)
 
 if __name__ == "__main__":
     main()
