@@ -39,10 +39,10 @@ class Buscador:
                 
         resultados.sort(key=lambda x: x[0], reverse=True)
         
-        print(f"\n--- RESULTADOS ---")
+        frases = []
+        
         if not resultados:
-            print("No se encontraron coincidencias.")
-            return
+            return frases
 
         for i in range(min(k, len(resultados))):
             similitud = resultados[i][0]
@@ -53,4 +53,5 @@ class Buscador:
             ver = refs[2]
             texto = refs[3]
             
-            print(f"{i+1}. {texto} {libro} {cap}:{ver} | Similitud: {similitud}")
+            frases.append(f"{i+1}. {texto} {libro} {cap}:{ver} | Similitud: {similitud}")
+        return frases
