@@ -12,10 +12,17 @@ def main():
         print(f"Ocurrió un error al cargar los datos: {e}")
 
     visualizador = Visualizador(biblia)
-    promedios = visualizador.obtener_distribucion_longitud_versiculos()
+    promedios = visualizador.obtener_promedio_longitud_versiculos()
 
     for nombre, promedio in promedios.items():
         print(f'{nombre}: {promedio}')
+        
+    print(f"Palabras únicas: {len(biblia.vocabulario)}")
+    top = sorted(biblia.frecuencias_globales.items(), key=lambda x: x[1], reverse=True)[:5]
+    print("Las 5 palabras más frecuentes:")
+    for palabra, frec in top:
+        print(f" - {palabra}: {frec}")
+    
 
 if __name__ == "__main__":
     main()
