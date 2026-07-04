@@ -25,3 +25,11 @@ async def versiculos_similares(request: Request):
     buscador = Buscador(biblia)
     buscador.procesar_biblia()
     return buscador.buscar_frase(body["frase"], 5)
+
+@app.post("/generador")
+async def generar_versiculos(request: Request):
+    body = await request.json()
+    generador = Generador(biblia)
+    generador.entrenar_modelos(n_maximo=4)
+    versiculo_generado = generador.generar_versiculo(body["n"], body["palabra"])
+    return versiculo_generado
