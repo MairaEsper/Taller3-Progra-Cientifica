@@ -112,3 +112,26 @@ def nube_palabras(
 ):
     visualizador = Visualizador(biblia)
     return visualizador.obtener_nube_palabras(top_n=top_n, testamento=testamento, libro=libro, capitulo=capitulo)
+
+@app.get("/filtros/testamentos")
+def get_testamentos():
+    return ["OT", "NT"]
+
+@app.get("/filtros/libros")
+def get_libros(testamento: str = Query(None, pattern="^(OT|NT)$")):
+    libros_lista = []
+    if testamento:
+        if testamento in biblia.testamentos:
+            libros_lista = [libro.nombre for libro in biblia.testamentos[testamento].libros.values()]
+    else:
+        for t in biblia.testamentos.values():
+            libros_lista.extend([libro.nombre for libro in t.libros.values()])
+    return sorted(libros_lista)
+
+@app.get("/filtros/capitulos")
+def get_capitulos(libro: str = Query(...)):
+    for t in biblia.testamentos.values():
+        for l in t.libros.values():
+            if l.nombre == libro:
+                return sorted(list(l.capitulos.keys()))
+    raise HTTPException(status_code=404, detail="Libro no encontrado")
