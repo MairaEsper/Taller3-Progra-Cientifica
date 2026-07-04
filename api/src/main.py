@@ -44,4 +44,8 @@ def cant_versiculos_libro():
     visualizador = Visualizador(biblia)
     return visualizador.obtener_versiculos_por_libro()
     
-    
+@app.get("/longitud-promedio-versiculos")
+def long_promedio_vers_libro():
+    visualizador = Visualizador(biblia)
+    promedios = visualizador.obtener_promedio_longitud_versiculos()
+    return promedios

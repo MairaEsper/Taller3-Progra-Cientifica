@@ -54,7 +54,7 @@ class Visualizador:
         promedios = {}
 
         for nombre, cantidades in libros.items():
-            promedios[nombre] = cantidades.get("palabras")/cantidades.get("versiculos")
+            promedios[nombre] = round(cantidades.get("palabras")/cantidades.get("versiculos"),2)
 
         return promedios
     
