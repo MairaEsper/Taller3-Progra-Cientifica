@@ -9,48 +9,74 @@ class Visualizador:
         self.biblia = biblia
         self.tfidf = TfIdf()
 
-    def obtener_versiculos_por_libro(self):
+    def obtener_versiculos_por_libro(self, testamento=None, libro=None, capitulo=None):
         datos = []
 
-        for libro in self.biblia.testamentos["OT"].libros.values():
-            total_versiculos = 0
-            for capitulo in libro.capitulos.values():
-                total_versiculos += len(capitulo.versiculos)
+        if testamento is None or testamento == "OT":
+            for libro_obj in self.biblia.testamentos["OT"].libros.values():
+                if libro and libro_obj.nombre != libro:
+                    continue
 
-            datos.append((libro.nombre, total_versiculos))
+                total_versiculos = 0
+                for capitulo_obj in libro_obj.capitulos.values():
+                    if capitulo is not None and capitulo_obj.numero != capitulo:
+                        continue
+                    total_versiculos += len(capitulo_obj.versiculos)
 
-        for libro in self.biblia.testamentos["NT"].libros.values():
-            total_versiculos = 0
-            for capitulo in libro.capitulos.values():
-                total_versiculos += len(capitulo.versiculos)
+                datos.append((libro_obj.nombre, total_versiculos))
 
-            datos.append((libro.nombre, total_versiculos))
+        if testamento is None or testamento == "NT":
+            for libro_obj in self.biblia.testamentos["NT"].libros.values():
+                if libro and libro_obj.nombre != libro:
+                    continue
+
+                total_versiculos = 0
+                for capitulo_obj in libro_obj.capitulos.values():
+                    if capitulo is not None and capitulo_obj.numero != capitulo:
+                        continue
+                    total_versiculos += len(capitulo_obj.versiculos)
+
+                datos.append((libro_obj.nombre, total_versiculos))
 
         df = pd.DataFrame(datos, columns=["Libro", "Cantidad"])
         return df.to_dict(orient="records")
 
-    def obtener_promedio_longitud_versiculos(self):
+    def obtener_promedio_longitud_versiculos(self, testamento=None, libro=None, capitulo=None):
         libros = {}
 
-        for libro in self.biblia.testamentos["OT"].libros.values():
-            if libro.nombre not in libros:
-                libros[libro.nombre] = {"palabras": 0, "versiculos": 0}
+        if testamento is None or testamento == "OT":
+            for libro_obj in self.biblia.testamentos["OT"].libros.values():
+                if libro and libro_obj.nombre != libro:
+                    continue
 
-            for capitulo in libro.capitulos.values():
-                for versiculo in capitulo.versiculos:
-                    cant_palabras = len(versiculo.texto_original.split())
-                    libros[libro.nombre]["palabras"] += cant_palabras
-                    libros[libro.nombre]["versiculos"] += 1
+                for capitulo_obj in libro_obj.capitulos.values():
+                    if capitulo is not None and capitulo_obj.numero != capitulo:
+                        continue
 
-        for libro in self.biblia.testamentos["NT"].libros.values():
-            if libro.nombre not in libros:
-                libros[libro.nombre] = {"palabras": 0, "versiculos": 0}
+                    for versiculo in capitulo_obj.versiculos:
+                        if libro_obj.nombre not in libros:
+                            libros[libro_obj.nombre] = {"palabras": 0, "versiculos": 0}
 
-            for capitulo in libro.capitulos.values():
-                for versiculo in capitulo.versiculos:
-                    cant_palabras = len(versiculo.texto_original.split())
-                    libros[libro.nombre]["palabras"] += cant_palabras
-                    libros[libro.nombre]["versiculos"] += 1
+                        cant_palabras = len(versiculo.texto_original.split())
+                        libros[libro_obj.nombre]["palabras"] += cant_palabras
+                        libros[libro_obj.nombre]["versiculos"] += 1
+
+        if testamento is None or testamento == "NT":
+            for libro_obj in self.biblia.testamentos["NT"].libros.values():
+                if libro and libro_obj.nombre != libro:
+                    continue
+
+                for capitulo_obj in libro_obj.capitulos.values():
+                    if capitulo is not None and capitulo_obj.numero != capitulo:
+                        continue
+
+                    for versiculo in capitulo_obj.versiculos:
+                        if libro_obj.nombre not in libros:
+                            libros[libro_obj.nombre] = {"palabras": 0, "versiculos": 0}
+
+                        cant_palabras = len(versiculo.texto_original.split())
+                        libros[libro_obj.nombre]["palabras"] += cant_palabras
+                        libros[libro_obj.nombre]["versiculos"] += 1
 
 
         promedios = {}
@@ -60,8 +86,39 @@ class Visualizador:
 
         return promedios
 
-    def obtener_nube_palabras(self, top_n=100):
-        frecuencias_ordenadas = sorted(self.biblia.frecuencias_globales.items(), key=lambda x: x[1], reverse=True,)[:top_n]
+    def obtener_nube_palabras(self, top_n=100, testamento=None, libro=None, capitulo=None):
+        if testamento is None and libro is None and capitulo is None:
+            frecuencias = self.biblia.frecuencias_globales
+        else:
+            frecuencias = {}
+
+            if testamento is None or testamento == "OT":
+                for libro_obj in self.biblia.testamentos["OT"].libros.values():
+                    if libro and libro_obj.nombre != libro:
+                        continue
+
+                    for capitulo_obj in libro_obj.capitulos.values():
+                        if capitulo is not None and capitulo_obj.numero != capitulo:
+                            continue
+
+                        for versiculo in capitulo_obj.versiculos:
+                            for token in versiculo.tokens:
+                                frecuencias[token] = frecuencias.get(token, 0) + 1
+
+            if testamento is None or testamento == "NT":
+                for libro_obj in self.biblia.testamentos["NT"].libros.values():
+                    if libro and libro_obj.nombre != libro:
+                        continue
+
+                    for capitulo_obj in libro_obj.capitulos.values():
+                        if capitulo is not None and capitulo_obj.numero != capitulo:
+                            continue
+
+                        for versiculo in capitulo_obj.versiculos:
+                            for token in versiculo.tokens:
+                                frecuencias[token] = frecuencias.get(token, 0) + 1
+
+        frecuencias_ordenadas = sorted(frecuencias.items(), key=lambda x: x[1], reverse=True,)[:top_n]
 
         return [{"palabra": palabra, "frecuencia": frecuencia} for palabra, frecuencia in frecuencias_ordenadas]
 
