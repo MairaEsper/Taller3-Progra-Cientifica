@@ -33,3 +33,8 @@ async def generar_versiculos(request: Request):
     generador.entrenar_modelos(n_maximo=4)
     versiculo_generado = generador.generar_versiculo(body["n"], body["palabra"])
     return versiculo_generado
+
+@app.get("/top-frecuentes")
+def top_5_frecuentes():
+    top = sorted(biblia.frecuencias_globales.items(), key=lambda x: x[1], reverse=True)[:5]
+    return top
