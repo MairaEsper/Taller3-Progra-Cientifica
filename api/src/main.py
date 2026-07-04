@@ -38,3 +38,10 @@ async def generar_versiculos(request: Request):
 def top_5_frecuentes():
     top = sorted(biblia.frecuencias_globales.items(), key=lambda x: x[1], reverse=True)[:5]
     return top
+
+@app.get("/cantidad-versiculos-libro")
+def cant_versiculos_libro():
+    visualizador = Visualizador(biblia)
+    return visualizador.obtener_versiculos_por_libro()
+    
+    

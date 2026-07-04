@@ -25,7 +25,7 @@ class Visualizador:
             datos.append((libro.nombre, total_versiculos))
 
         df = pd.DataFrame(datos, columns=["Libro", "Cantidad"])
-
+        return df.to_dict(orient="records")
     
     def obtener_promedio_longitud_versiculos(self):
         libros = {}
