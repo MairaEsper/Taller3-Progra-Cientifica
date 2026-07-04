@@ -59,3 +59,8 @@ def pca_versiculos(dimensiones: int = Query(2, ge=2, le=3)):
 def word2vec_versiculos(dimensiones: int = Query(2, ge=2, le=3)):
     visualizador = Visualizador(biblia)
     return visualizador.obtener_word2vec_versiculos(n_componentes=dimensiones)
+
+@app.get("/nube-palabras")
+def nube_palabras(top_n: int = Query(100, ge=10, le=500)):
+    visualizador = Visualizador(biblia)
+    return visualizador.obtener_nube_palabras(top_n=top_n)

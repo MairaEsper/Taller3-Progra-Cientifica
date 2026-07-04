@@ -60,6 +60,11 @@ class Visualizador:
 
         return promedios
 
+    def obtener_nube_palabras(self, top_n=100):
+        frecuencias_ordenadas = sorted(self.biblia.frecuencias_globales.items(), key=lambda x: x[1], reverse=True,)[:top_n]
+
+        return [{"palabra": palabra, "frecuencia": frecuencia} for palabra, frecuencia in frecuencias_ordenadas]
+
     def _obtener_corpus_versiculos(self):
         textos_versiculos = []
         etiquetas_testamento = []
