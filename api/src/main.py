@@ -49,3 +49,13 @@ def long_promedio_vers_libro():
     visualizador = Visualizador(biblia)
     promedios = visualizador.obtener_promedio_longitud_versiculos()
     return promedios
+
+@app.get("/pca-versiculos")
+def pca_versiculos(dimensiones: int = Query(2, ge=2, le=3)):
+    visualizador = Visualizador(biblia)
+    return visualizador.obtener_pca_versiculos(n_componentes=dimensiones)
+
+@app.get("/word2vec-versiculos")
+def word2vec_versiculos(dimensiones: int = Query(2, ge=2, le=3)):
+    visualizador = Visualizador(biblia)
+    return visualizador.obtener_word2vec_versiculos(n_componentes=dimensiones)
