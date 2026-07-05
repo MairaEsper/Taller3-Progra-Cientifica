@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from api_client import api_get
+from wordcloud import WordCloud
 
 def render(base_url: str):
     st.sidebar.header("Filtros")
@@ -47,7 +48,15 @@ def render(base_url: str):
                     st.warning("No hay datos para esos filtros")
 
         with col2:
-            pass
+            st.subheader("Longitud promedio de versículos")
+            with st.spinner("Cargando promedios..."):
+                data_prom = api_get(base_url, "/longitud-promedio-versiculos", params=filtros_api)
+
+                if data_prom:
+                    df_prom = pd.DataFrame(list(data_prom.items()), columns=["Libro", "Promedio de Palabras"])
+                    st.bar_chart(df_prom.set_index("Libro"))
+                else:
+                    st.warning("No hay datos para esos filtros")
 
         col3, col4 = st.columns(2)
 
@@ -63,6 +72,24 @@ def render(base_url: str):
                     st.warning("No hay datos para estos filtros.")
 
         with col4:
-            pass
+            st.subheader("Nube de palabras")
+            with st.spinner("Generando nube..."):
+                data_nube = api_get(base_url, "/nube-palabras", params=filtros_api)
+                
+                if data_nube:
+                    frecuencias_dict = {item["palabra"]: item["frecuencia"] for item in data_nube}
+
+                    if frecuencias_dict:
+                        nube = WordCloud(width=800, height=400, background_color='white',colormap='viridis').generate_from_frequencies(frecuencias_dict)
+
+                        fig, ax = plt.subplots(figsize=(10, 5))
+                        ax.imshow(nube, interpolation='bilinear')
+                        ax.axis("off") 
+  
+                        st.pyplot(fig)
+                    else:
+                        st.warning("No hay suficientes palabras.")
+                else:
+                    st.warning("No hay datos para estos filtros.")
             
         st.divider()
