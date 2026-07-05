@@ -31,7 +31,8 @@ async def generar_versiculos(request: Request):
     body = await request.json()
     generador = Generador(biblia)
     generador.entrenar_modelos(n_maximo=4)
-    versiculo_generado = generador.generar_versiculo(body["n"], body["palabra"])
+    max_largo = body.get("max_palabras", 30)
+    versiculo_generado = generador.generar_versiculo(body["n"], body["palabra"], max_palabras=max_largo)
     return versiculo_generado
 
 @app.get("/top-frecuentes")
