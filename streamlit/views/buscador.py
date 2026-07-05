@@ -41,4 +41,4 @@ def render(base_url: str):
                 
                 df_resultados = pd.DataFrame(tabla)
                 
-                st.dataframe(df_resultados, use_container_width=True, hide_index=True)
+                st.dataframe(df_resultados, width='stretch', hide_index=True)
