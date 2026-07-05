@@ -3,7 +3,7 @@ import pandas as pd
 from api_client import api_post
 
 def render(base_url: str):
-    st.title("Buscador Semántico de Versículos")
+    st.title("Buscador")
 
     frase_input = st.text_input("Frase a buscar:")
 
