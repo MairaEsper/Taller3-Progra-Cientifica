@@ -36,7 +36,23 @@ def render(base_url: str):
         col1, col2 = st.columns(2)
 
         with col1:
-            st.subheader("Top Palabras Más Frecuentes")
+            st.subheader("Cantidad de versículos por libro")
+            with st.spinner("Cargando cantidad de versículos por libro..."):
+                data_cant = api_get(base_url, "/cantidad-versiculos-libro", params=filtros_api)
+
+                if data_cant:
+                    df_cant = pd.DataFrame(data_cant)
+                    st.dataframe(df_cant, use_container_width=True, hide_index=True)
+                else:
+                    st.warning("No hay datos para esos filtros")
+
+        with col2:
+            pass
+
+        col3, col4 = st.columns(2)
+
+        with col3:
+            st.subheader("Top palabras más frecuentes")
             with st.spinner("Cargando frecuencias..."):
                 data_top = api_get(base_url, "/top-frecuentes", params=filtros_api)
                 
@@ -46,7 +62,7 @@ def render(base_url: str):
                 else:
                     st.warning("No hay datos para estos filtros.")
 
-        with col2:
+        with col4:
             pass
             
         st.divider()
