@@ -43,7 +43,7 @@ def render(base_url: str):
 
                 if data_cant:
                     df_cant = pd.DataFrame(data_cant)
-                    st.dataframe(df_cant, use_container_width=True, hide_index=True)
+                    st.dataframe(df_cant, width='stretch', hide_index=True)
                 else:
                     st.warning("No hay datos para esos filtros")
 
@@ -67,7 +67,7 @@ def render(base_url: str):
                 
                 if data_top:
                     df_top = pd.DataFrame(data_top, columns=["Palabra", "Frecuencia"])
-                    st.dataframe(df_top, use_container_width=True, hide_index=True)
+                    st.dataframe(df_top, width='stretch', hide_index=True)
                 else:
                     st.warning("No hay datos para estos filtros.")
 
