@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from views import dashboard, buscador
+from views import dashboard, buscador, visualizador
 
 st.set_page_config(page_title="Dashboard Biblia", layout="wide")
 
@@ -11,3 +11,5 @@ st.title("Dashboard Principal")
 dashboard.render(DEFAULT_API_URL)
 
 buscador.render(DEFAULT_API_URL)
+
+visualizador.render(DEFAULT_API_URL)
