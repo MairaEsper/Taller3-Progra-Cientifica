@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from views import dashboard
+from views import dashboard, buscador
 
 st.set_page_config(page_title="Dashboard Biblia", layout="wide")
 
@@ -9,3 +9,5 @@ DEFAULT_API_URL = "http://127.0.0.1:8000"
 st.title("Dashboard Principal")
 
 dashboard.render(DEFAULT_API_URL)
+
+buscador.render(DEFAULT_API_URL)
