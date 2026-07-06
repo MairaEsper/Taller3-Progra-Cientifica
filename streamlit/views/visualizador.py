@@ -21,46 +21,46 @@ def render(base_url: str):
             format_func=lambda x: f"{x}D"
         )
 
-
-    if modelo_seleccionado == "PCA (TF-IDF)":
-        endpoint = "/pca-versiculos"
-    else:
-        endpoint = "/word2vec-versiculos"
-
-    params = {"dimensiones": dimensiones}
-
-    with st.spinner("Cargando..."):
-        data = api_get(base_url, endpoint, params=params)
-
-        if not data or "puntos" not in data:
-            st.error("No se pudieron cargar los datos de la API.")
-            return
-
-        df_puntos = pd.DataFrame(data["puntos"])
-        varianza = data.get("varianza", 0)
-
-        st.metric(label="Varianza", value=f"{varianza}%")
-        
-        if dimensiones == 2:
-            fig = px.scatter(
-                df_puntos, 
-                x="x", 
-                y="y", 
-                color="testamento",
-                title=f"Proyección 2D - {modelo_seleccionado}",
-                hover_data=df_puntos.columns
-            )
-            
+    if st.button("Generar Modelo", type="primary"):
+        if modelo_seleccionado == "PCA (TF-IDF)":
+            endpoint = "/pca-versiculos"
         else:
-            fig = px.scatter_3d(
-                df_puntos, 
-                x="x", 
-                y="y", 
-                z="z", 
-                color="testamento",
-                title=f"Proyección 3D - {modelo_seleccionado}",
-                hover_data=df_puntos.columns
-            )
-            fig.update_layout(height=700)
+            endpoint = "/word2vec-versiculos"
 
-        st.plotly_chart(fig, width='stretch')
+        params = {"dimensiones": dimensiones}
+
+        with st.spinner("Cargando..."):
+            data = api_get(base_url, endpoint, params=params)
+
+            if not data or "puntos" not in data:
+                st.error("No se pudieron cargar los datos de la API.")
+                return
+
+            df_puntos = pd.DataFrame(data["puntos"])
+            varianza = data.get("varianza", 0)
+
+            st.metric(label="Varianza", value=f"{varianza}%")
+            
+            if dimensiones == 2:
+                fig = px.scatter(
+                    df_puntos, 
+                    x="x", 
+                    y="y", 
+                    color="testamento",
+                    title=f"Proyección 2D - {modelo_seleccionado}",
+                    hover_data=df_puntos.columns
+                )
+                
+            else:
+                fig = px.scatter_3d(
+                    df_puntos, 
+                    x="x", 
+                    y="y", 
+                    z="z", 
+                    color="testamento",
+                    title=f"Proyección 3D - {modelo_seleccionado}",
+                    hover_data=df_puntos.columns
+                )
+                fig.update_layout(height=700)
+
+            st.plotly_chart(fig, width='stretch')
